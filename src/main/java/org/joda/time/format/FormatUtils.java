@@ -56,7 +56,7 @@ public class FormatUtils {
 
     /**
      * Converts an integer to a string, prepended with a variable amount of '0'
-     * pad characters, and appends it to the given appendable.
+     * pad characters, 								and appends it to the given appendable.
      *
      * <p>This method is optimized for converting small values to strings.
      *
@@ -65,12 +65,14 @@ public class FormatUtils {
      * @param size minimum amount of digits to append
      * @since 2.4
      */
+    
     public static void appendPaddedInteger(Appendable appenadble, int value, int size) throws IOException {
         if (value < 0) {
             appenadble.append('-');
             if (value != Integer.MIN_VALUE) {
                 value = -value;
             } else {
+            	//@ assert value == Integer.MIN_VALUE;
                 for (; size > 10; size--) {
                     appenadble.append('0');
                 }
@@ -84,6 +86,7 @@ public class FormatUtils {
             }
             appenadble.append((char)(value + '0'));
         } else if (value < 100) {
+        	//@ assert value >= 10 &&  value < 100;
             for (; size > 2; size--) {
                 appenadble.append('0');
             }
@@ -95,12 +98,15 @@ public class FormatUtils {
             // Append remainder by calculating (value - d * 10).
             appenadble.append((char) (value - (d << 3) - (d << 1) + '0'));
         } else {
+        	//@ assert value >= 0 && value >= 100;
             int digits;
             if (value < 1000) {
                 digits = 3;
             } else if (value < 10000) {
+            	//@ assert value >= 1000 && value <10000;
                 digits = 4;
             } else {
+            	//@ assert value >= 1000 && value >= 10000;
                 digits = (int)(Math.log(value) / LOG_10) + 1;
             }
             for (; size > digits; size--) {
@@ -144,13 +150,16 @@ public class FormatUtils {
         if (intValue == value) {
             appendPaddedInteger(appendable, intValue, size);
         } else if (size <= 19) {
+        	//@ assert intValue != value && size <= 19;
             appendable.append(Long.toString(value));
         } else {
+        	//@ assert intValue != value && size > 19;
             if (value < 0) {
                 appendable.append('-');
                 if (value != Long.MIN_VALUE) {
                     value = -value;
                 } else {
+                	//@ assert value == Long.MIN_VALUE;
                     for (; size > 19; size--) {
                         appendable.append('0');
                     }
@@ -184,6 +193,7 @@ public class FormatUtils {
             if (value != Integer.MIN_VALUE) {
                 value = -value;
             } else {
+            	//@ assert value  == Integer.MIN_VALUE;
                 for (; size > 10; size--) {
                     out.write('0');
                 }
@@ -197,6 +207,7 @@ public class FormatUtils {
             }
             out.write(value + '0');
         } else if (value < 100) {
+        	//@ assert  value  >= 10 && value < 100;
             for (; size > 2; size--) {
                 out.write('0');
             }
@@ -208,12 +219,15 @@ public class FormatUtils {
             // Append remainder by calculating (value - d * 10).
             out.write(value - (d << 3) - (d << 1) + '0');
         } else {
+        	//@ assert value >= 10 && value >= 100;
             int digits;
             if (value < 1000) {
                 digits = 3;
             } else if (value < 10000) {
+            	//@ assert  value >= 1000 && value < 10000;
                 digits = 4;
             } else {
+            	//@ assert value >= 1000 && value >= 10000;
                 digits = (int)(Math.log(value) / LOG_10) + 1;
             }
             for (; size > digits; size--) {
@@ -240,13 +254,16 @@ public class FormatUtils {
         if (intValue == value) {
             writePaddedInteger(out, intValue, size);
         } else if (size <= 19) {
+        	//@ assert intValue != value && size <= 19;
             out.write(Long.toString(value));
         } else {
+        	//@ assert intValue != value && size > 19;
             if (value < 0) {
                 out.write('-');
                 if (value != Long.MIN_VALUE) {
                     value = -value;
                 } else {
+                	//@ assert value == Long.MIN_VALUE;
                     for (; size > 19; size--) {
                         out.write('0');
                     }
@@ -293,6 +310,7 @@ public class FormatUtils {
             if (value != Integer.MIN_VALUE) {
                 value = -value;
             } else {
+            	//@ assert value == Integer.MIN_VALUE;
                 appendable.append("" + -(long)Integer.MIN_VALUE);
                 return;
             }
@@ -300,6 +318,7 @@ public class FormatUtils {
         if (value < 10) {
             appendable.append((char)(value + '0'));
         } else if (value < 100) {
+        	//@ assert value >= 10 && value < 100;
             // Calculate value div/mod by 10 without using two expensive
             // division operations. (2 ^ 27) / 10 = 13421772. Add one to
             // value to correct rounding error.
@@ -308,6 +327,7 @@ public class FormatUtils {
             // Append remainder by calculating (value - d * 10).
             appendable.append((char) (value - (d << 3) - (d << 1) + '0'));
         } else {
+        	//@ assert value >= 10 && value >= 100;
             appendable.append(Integer.toString(value));
         }
     }
@@ -341,6 +361,7 @@ public class FormatUtils {
         if (intValue == value) {
             appendUnpaddedInteger(appendable, intValue);
         } else {
+        	//@ assert intValue != value;
             appendable.append(Long.toString(value));
         }
     }
@@ -361,6 +382,7 @@ public class FormatUtils {
             if (value != Integer.MIN_VALUE) {
                 value = -value;
             } else {
+            	//@ assert value == Integer.MIN_VALUE;
                 out.write("" + -(long)Integer.MIN_VALUE);
                 return;
             }
@@ -368,6 +390,7 @@ public class FormatUtils {
         if (value < 10) {
             out.write(value + '0');
         } else if (value < 100) {
+        	//@ assert value >= 10 && value < 100;
             // Calculate value div/mod by 10 without using two expensive
             // division operations. (2 ^ 27) / 10 = 13421772. Add one to
             // value to correct rounding error.
@@ -376,6 +399,7 @@ public class FormatUtils {
             // Append remainder by calculating (value - d * 10).
             out.write(value - (d << 3) - (d << 1) + '0');
         } else {
+        	//@ assert value >= 10 && value >= 100;
             out.write(Integer.toString(value));
         }
     }
@@ -395,6 +419,7 @@ public class FormatUtils {
         if (intValue == value) {
             writeUnpaddedInteger(out, intValue);
         } else {
+        	//@ assert intValue != value;
             out.write(Long.toString(value));
         }
     }
@@ -408,6 +433,7 @@ public class FormatUtils {
             if (value != Long.MIN_VALUE) {
                 return calculateDigitCount(-value) + 1;
             } else {
+            	//@ assert value == Long.MIN_VALUE;
                 return 20;
             }
         }
@@ -430,6 +456,7 @@ public class FormatUtils {
         if (text.length() <= sampleLen + 3) {
             sampleText = text;
         } else {
+        	//@ assert text.length() > sampleLen + 3;
             sampleText = text.substring(0, sampleLen).concat("...");
         }
         
