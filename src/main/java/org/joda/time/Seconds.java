@@ -1,5 +1,4 @@
-/*
- *  Copyright 2001-2010 Stephen Colebourne
+/*  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -68,6 +67,10 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * @param seconds  the number of seconds to obtain an instance for
      * @return the instance of Seconds
      */
+      //@ requires seconds >= 0;
+  //@ requires seconds <= 3;
+  //@ requires seconds == Integer.MAX_VALUE;
+  //@ requires seconds == Integer.MIN_VALUE;  
     public static Seconds seconds(int seconds) {
         switch (seconds) {
             case 0:
@@ -194,13 +197,14 @@ public final class Seconds extends BaseSingleFieldPeriod {
      *
      * @param seconds  the number of seconds to represent
      */
+    //@ requires seconds >= 0;
     private Seconds(int seconds) {
         super(seconds);
     }
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -238,7 +242,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * This is not true when daylight savings time is considered, and may also
      * not be true for some unusual chronologies. However, it is included as it
      * is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of whole weeks for this number of seconds
      */
     public Weeks toStandardWeeks() {
@@ -255,7 +259,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * This is not true when daylight savings is considered and may also not
      * be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of days for this number of seconds
      */
     public Days toStandardDays() {
@@ -271,7 +275,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * 60 minutes long and all minutes are 60 seconds long.
      * This may not be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of hours for this number of seconds
      */
     public Hours toStandardHours() {
@@ -287,7 +291,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * 60 seconds long.
      * This may not be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of minutes for this number of seconds
      */
     public Minutes toStandardMinutes() {
@@ -305,7 +309,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * This is not true when daylight savings time is considered, and may also
      * not be true for some unusual chronologies. However, it is included as it
      * is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a duration equivalent to this number of seconds
      */
     public Duration toStandardDuration() {
@@ -319,6 +323,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      *
      * @return the number of seconds in the period
      */
+    
     public int getSeconds() {
         return getValue();
     }
@@ -333,6 +338,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * @return the new period plus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
+    //@ requires seconds >= 0;
     public Seconds plus(int seconds) {
         if (seconds == 0) {
             return this;
@@ -366,6 +372,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * @return the new period minus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
+  //@ requires seconds >= 0;
     public Seconds minus(int seconds) {
         return plus(FieldUtils.safeNegate(seconds));
     }
@@ -396,6 +403,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+  //@ requires scalar >= 0;
     public Seconds multipliedBy(int scalar) {
         return Seconds.seconds(FieldUtils.safeMultiply(getValue(), scalar));
     }
@@ -410,6 +418,7 @@ public final class Seconds extends BaseSingleFieldPeriod {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+  //@ requires divisor != 0;
     public Seconds dividedBy(int divisor) {
         if (divisor == 1) {
             return this;
@@ -469,3 +478,6 @@ public final class Seconds extends BaseSingleFieldPeriod {
     }
 
 }
+
+
+

@@ -179,6 +179,7 @@ public abstract class AbstractPeriod implements ReadablePeriod {
      * @return true if all the field values are equal, false if
      *  not or the period is null or of an incorrect type
      */
+    //@ also ensures \result == true || \result == false;
     public boolean equals(Object period) {
         if (this == period) {
             return true;
@@ -203,6 +204,7 @@ public abstract class AbstractPeriod implements ReadablePeriod {
      *
      * @return a hash code
      */
+    
     public int hashCode() {
         int total = 17;
         for (int i = 0, isize = size(); i < isize; i++) {

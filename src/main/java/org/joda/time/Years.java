@@ -68,6 +68,7 @@ public final class Years extends BaseSingleFieldPeriod {
      * @param years  the number of years to obtain an instance for
      * @return the instance of Years
      */
+    //@ requires years == 0 || years == 1 || years == 2 || years == 3 || years == Integer.MAX_VALUE || years == Integer.MIN_VALUE;
     public static Years years(int years) {
         switch (years) {
             case 0:
@@ -223,6 +224,7 @@ public final class Years extends BaseSingleFieldPeriod {
      * @return the new period plus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
+    
     public Years plus(int years) {
         if (years == 0) {
             return this;
@@ -300,6 +302,7 @@ public final class Years extends BaseSingleFieldPeriod {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    //@ requires divisor != 0;
     public Years dividedBy(int divisor) {
         if (divisor == 1) {
             return this;

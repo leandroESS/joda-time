@@ -35,6 +35,7 @@ public interface ReadWritableInstant extends ReadableInstant {
      * instant to
      * @throws IllegalArgumentException if the value is invalid
      */
+	//@ requires instant >= 0; 
     void setMillis(long instant);
 
     /**
@@ -93,6 +94,7 @@ public interface ReadWritableInstant extends ReadableInstant {
      * @param duration  the millis to add
      * @throws IllegalArgumentException if the value is invalid
      */
+  //@ requires duration >= 0; 
     void add(long duration);
 
     /**
@@ -145,6 +147,7 @@ public interface ReadWritableInstant extends ReadableInstant {
      * @param value  the value to set the field to
      * @throws IllegalArgumentException if the value is invalid
      */
+  //@ requires value >= 0; 
     void set(DateTimeFieldType type, int value);
 
     /**
@@ -154,6 +157,7 @@ public interface ReadWritableInstant extends ReadableInstant {
      * @param amount  the amount to add of this duration
      * @throws ArithmeticException if the result exceeds the capacity of the instant
      */
+  //@ requires amount >= 0; 
     void add(DurationFieldType type, int amount);
 
 }

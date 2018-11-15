@@ -121,6 +121,7 @@ public abstract class BaseDuration
      * 
      * @param duration  the new length of the duration
      */
+    //@ requires duration >= 0;
     protected void setMillis(long duration) {
         iMillis = duration;
     }

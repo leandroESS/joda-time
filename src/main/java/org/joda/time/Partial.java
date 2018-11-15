@@ -448,7 +448,7 @@ public final class Partial
      * @return a copy of this instance with the field set
      * @throws IllegalArgumentException if the value is null or invalid
      */
-    public Partial with(DateTimeFieldType fieldType, int value) {
+    public Partial with(DateTimeFieldType fieldType, /*@ non_null @*/int value) {
         if (fieldType == null) {
             throw new IllegalArgumentException("The field type must not be null");
         }

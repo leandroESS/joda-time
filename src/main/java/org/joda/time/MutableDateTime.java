@@ -145,7 +145,7 @@ public class MutableDateTime
      * @since 2.0
      */
     @FromString
-    public static MutableDateTime parse(String str) {
+    public static MutableDateTime parse(/*@ non_null @*/String str) {
         return parse(str, ISODateTimeFormat.dateTimeParser().withOffsetParsed());
     }
 
@@ -156,7 +156,7 @@ public class MutableDateTime
      * @param formatter  the formatter to use, not null
      * @since 2.0
      */
-    public static MutableDateTime parse(String str, DateTimeFormatter formatter) {
+    public static MutableDateTime parse(/*@ non_null @*/String str, DateTimeFormatter formatter) {
         return formatter.parseDateTime(str).toMutableDateTime();
     }
 
@@ -205,6 +205,7 @@ public class MutableDateTime
      *
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      */
+    //@ requires instant >= 0;
     public MutableDateTime(long instant) {
         super(instant);
     }
@@ -218,6 +219,7 @@ public class MutableDateTime
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      * @param zone  the time zone, null means default zone
      */
+    //@ requires instant >= 0; 
     public MutableDateTime(long instant, DateTimeZone zone) {
         super(instant, zone);
     }
@@ -232,6 +234,7 @@ public class MutableDateTime
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      * @param chronology  the chronology, null means ISOChronology in default zone
      */
+    //@ requires instant >= 0;
     public MutableDateTime(long instant, Chronology chronology) {
         super(instant, chronology);
     }
@@ -431,7 +434,8 @@ public class MutableDateTime
      * @param mode  rounding mode or ROUND_NONE to disable
      * @throws IllegalArgumentException if mode is unknown, no exception if field is null
      */
-    public void setRounding(DateTimeField field, int mode) {
+    
+    public void setRounding(DateTimeField field,/*@ non_null @*/ int mode) {
         if (field != null && (mode < ROUND_NONE || mode > ROUND_HALF_EVEN)) {
             throw new IllegalArgumentException("Illegal rounding mode: " + mode);
         }
@@ -449,6 +453,7 @@ public class MutableDateTime
      * @param instant  the milliseconds since 1970-01-01T00:00:00Z to set the
      * datetime to
      */
+    
     public void setMillis(long instant) {
         switch (iRoundingMode) {
             case ROUND_NONE:
@@ -616,7 +621,7 @@ public class MutableDateTime
      * @param value  the value to set the field to
      * @throws IllegalArgumentException if the value is null or invalid
      */
-    public void set(DateTimeFieldType type, int value) {
+    public void set(DateTimeFieldType type,/*@ non_null @*/ int value) {
         if (type == null) {
             throw new IllegalArgumentException("Field must not be null");
         }
@@ -647,6 +652,7 @@ public class MutableDateTime
      * @param year  the year
      * @throws IllegalArgumentException if the value is invalid
      */
+    
     public void setYear(final int year) {
         setMillis(getChronology().year().set(getMillis(), year));
     }
@@ -1358,6 +1364,7 @@ public class MutableDateTime
          * @return the mutable datetime being used, so calls can be chained
          * @see DateTimeField#add(long,int)
          */
+        
         public MutableDateTime add(int value) {
             iInstant.setMillis(getField().add(iInstant.getMillis(), value));
             return iInstant;

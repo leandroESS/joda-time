@@ -76,6 +76,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * @param days  the number of days to obtain an instance for
      * @return the instance of Days
      */
+    //@ requires days >= 0 && days <= 7;
     public static Days days(int days) {
         switch (days) {
             case 0:
@@ -212,13 +213,14 @@ public final class Days extends BaseSingleFieldPeriod {
      *
      * @param days  the number of days to represent
      */
+  //@ requires days >= 0 && days <= 7;
     private Days(int days) {
         super(days);
     }
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -231,6 +233,7 @@ public final class Days extends BaseSingleFieldPeriod {
      *
      * @return the period type
      */
+    
     public DurationFieldType getFieldType() {
         return DurationFieldType.days();
     }
@@ -254,7 +257,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * 7 days long.
      * This may not be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of weeks for this number of days
      */
     public Weeks toStandardWeeks() {
@@ -270,7 +273,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * This is not true when daylight savings is considered and may also not
      * be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of hours for this number of days
      * @throws ArithmeticException if the number of hours is too large to be represented
      */
@@ -288,7 +291,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * This is not true when daylight savings is considered and may also not
      * be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of minutes for this number of days
      * @throws ArithmeticException if the number of minutes is too large to be represented
      */
@@ -306,7 +309,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * This is not true when daylight savings is considered and may also not
      * be true for some unusual chronologies. However, it is included
      * as it is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a period representing the number of seconds for this number of days
      * @throws ArithmeticException if the number of seconds is too large to be represented
      */
@@ -325,7 +328,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * This is not true when daylight savings time is considered, and may also
      * not be true for some unusual chronologies. However, it is included as it
      * is a useful operation for many applications and business rules.
-     * 
+     *
      * @return a duration equivalent to this number of days
      */
     public Duration toStandardDuration() {
@@ -353,6 +356,9 @@ public final class Days extends BaseSingleFieldPeriod {
      * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
+    
+    //@ requires  days <= 7;
+    
     public Days plus(int days) {
         if (days == 0) {
             return this;
@@ -369,6 +375,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
+  
     public Days plus(Days days) {
         if (days == null) {
             return this;
@@ -386,6 +393,8 @@ public final class Days extends BaseSingleFieldPeriod {
      * @return the new period minus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
+    //@ requires days >= 0;
+    //@  requires days <= 7;
     public Days minus(int days) {
         return plus(FieldUtils.safeNegate(days));
     }
@@ -430,6 +439,7 @@ public final class Days extends BaseSingleFieldPeriod {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    //@ requires divisor != 0;
     public Days dividedBy(int divisor) {
         if (divisor == 1) {
             return this;
@@ -489,3 +499,5 @@ public final class Days extends BaseSingleFieldPeriod {
     }
 
 }
+
+

@@ -92,6 +92,7 @@ public abstract class AbstractDuration implements ReadableDuration {
      * @throws NullPointerException if the object is null
      * @throws ClassCastException if the given object is not supported
      */
+    //@ also ensures \result == -1 || \result == 1 || \result == 0;
     public int compareTo(ReadableDuration other) {
         long thisMillis = this.getMillis();
         long otherMillis = other.getMillis();

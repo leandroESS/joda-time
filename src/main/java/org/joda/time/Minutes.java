@@ -68,6 +68,10 @@ public final class Minutes extends BaseSingleFieldPeriod {
      * @param minutes  the number of minutes to obtain an instance for
      * @return the instance of Minutes
      */
+    //@ requires minutes >= 0;
+    //@ requires minutes <= 3;
+    //@ requires minutes == Integer.MAX_VALUE;
+    //@ requires minutes == Integer.MIN_VALUE;
     public static Minutes minutes(int minutes) {
         switch (minutes) {
             case 0:
@@ -194,6 +198,7 @@ public final class Minutes extends BaseSingleFieldPeriod {
      *
      * @param minutes  the number of minutes to represent
      */
+    //@ requires minutes >= 0;
     private Minutes(int minutes) {
         super(minutes);
     }
@@ -410,6 +415,7 @@ public final class Minutes extends BaseSingleFieldPeriod {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    //@ requires divisor != 0;
     public Minutes dividedBy(int divisor) {
         if (divisor == 1) {
             return this;

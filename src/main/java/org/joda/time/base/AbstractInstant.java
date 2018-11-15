@@ -319,6 +319,7 @@ public abstract class AbstractInstant implements ReadableInstant {
      * @param instant  a millisecond instant to check against
      * @return true if this instant is strictly after the instant passed in
      */
+    //@ requires instant >= 0;
     public boolean isAfter(long instant) {
         return (getMillis() > instant);
     }
@@ -353,6 +354,7 @@ public abstract class AbstractInstant implements ReadableInstant {
      * @param instant  a millisecond instant to check against
      * @return true if this instant is strictly before the instant passed in
      */
+    //@ requires instant >= 0;
     public boolean isBefore(long instant) {
         return (getMillis() < instant);
     }
@@ -387,6 +389,7 @@ public abstract class AbstractInstant implements ReadableInstant {
      * @param instant  a millisecond instant to check against
      * @return true if this instant is equal to the instant passed in
      */
+    //@ requires instant >= 0;
     public boolean isEqual(long instant) {
         return (getMillis() == instant);
     }

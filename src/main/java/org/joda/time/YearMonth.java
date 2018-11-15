@@ -137,7 +137,7 @@ public final class YearMonth
      * @since 2.0
      */
     @FromString
-    public static YearMonth parse(String str) {
+    public static YearMonth parse(/*@ non_null @*/String str) {
         return parse(str, ISODateTimeFormat.localDateParser());
     }
 
@@ -148,7 +148,7 @@ public final class YearMonth
      * @param formatter  the formatter to use, not null
      * @since 2.0
      */
-    public static YearMonth parse(String str, DateTimeFormatter formatter) {
+    public static YearMonth parse(/*@ non_null @*/String str, DateTimeFormatter formatter) {
         LocalDate date = formatter.parseLocalDate(str);
         return new YearMonth(date.getYear(), date.getMonthOfYear());
     }
@@ -253,6 +253,7 @@ public final class YearMonth
      *
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      */
+    
     public YearMonth(long instant) {
         super(instant);
     }
@@ -322,6 +323,8 @@ public final class YearMonth
      * @param year  the year
      * @param monthOfYear  the month of the year
      */
+    //@ requires year >= 0;
+    //@ requires monthOfYear >= 0 && monthOfYear <= 12;
     public YearMonth(int year, int monthOfYear) {
         this(year, monthOfYear, null);
     }
@@ -340,6 +343,8 @@ public final class YearMonth
      * @param monthOfYear  the month of the year
      * @param chronology  the chronology, null means ISOChronology in the default zone
      */
+  //@ requires year >= 0;
+    //@ requires monthOfYear >= 0 && monthOfYear <= 12;
     public YearMonth(int year, int monthOfYear, Chronology chronology) {
         super(new int[] {year, monthOfYear}, chronology);
     }
@@ -383,6 +388,7 @@ public final class YearMonth
      *
      * @return the field count, two
      */
+    //@ also ensures \result == 2;
     public int size() {
         return 2;
     }
@@ -396,6 +402,7 @@ public final class YearMonth
      * @param chrono  the chronology to use
      * @return the field, never null
      */
+    //@ also requires index == YEAR || index == MONTH_OF_YEAR;
     protected DateTimeField getField(int index, Chronology chrono) {
         switch (index) {
             case YEAR:
@@ -414,7 +421,7 @@ public final class YearMonth
      * @return the field at the specified index, never null
      * @throws IndexOutOfBoundsException if the index is invalid
      */
-    public DateTimeFieldType getFieldType(int index) {
+    public DateTimeFieldType getFieldType(/*@ non_null @*/int index) {
         return FIELD_TYPES[index];
     }
 
@@ -474,7 +481,8 @@ public final class YearMonth
      * @return a copy of this instance with the field set, never null
      * @throws IllegalArgumentException if the value is null or invalid
      */
-    public YearMonth withField(DateTimeFieldType fieldType, int value) {
+    
+    public YearMonth withField(DateTimeFieldType fieldType,/*@ non_null @*/ int value) {
         int index = indexOfSupported(fieldType);
         if (value == getValue(index)) {
             return this;
@@ -502,7 +510,7 @@ public final class YearMonth
      * @throws IllegalArgumentException if the value is null or invalid
      * @throws ArithmeticException if the new date-time exceeds the capacity
      */
-    public YearMonth withFieldAdded(DurationFieldType fieldType, int amount) {
+    public YearMonth withFieldAdded(DurationFieldType fieldType,/*@ non_null @*/ int amount) {
         int index = indexOfSupported(fieldType);
         if (amount == 0) {
             return this;
@@ -731,6 +739,7 @@ public final class YearMonth
      * @return a copy of this object with the field set, never null
      * @throws IllegalArgumentException if the value is invalid
      */
+    //@ requires year >= 0;
     public YearMonth withYear(int year) {
         int[] newValues = getValues();
         newValues = getChronology().year().set(this, YEAR, newValues, year);
@@ -748,6 +757,7 @@ public final class YearMonth
      * @return a copy of this object with the field set, never null
      * @throws IllegalArgumentException if the value is invalid
      */
+    //@ requires monthOfYear >= 0;
     public YearMonth withMonthOfYear(int monthOfYear) {
         int[] newValues = getValues();
         newValues = getChronology().monthOfYear().set(this, MONTH_OF_YEAR, newValues, monthOfYear);
@@ -878,6 +888,7 @@ public final class YearMonth
          * 
          * @return the partial
          */
+       
         public YearMonth getYearMonth() {
             return iBase;
         }

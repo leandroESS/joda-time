@@ -468,6 +468,7 @@ public final class Interval
      * @return an interval with the start from this interval and the specified end
      * @throws IllegalArgumentException if the resulting interval has end before start
      */
+    //@ requires endInstant >= 0;
     public Interval withEndMillis(long endInstant) {
         if (endInstant == getEndMillis()) {
             return this;

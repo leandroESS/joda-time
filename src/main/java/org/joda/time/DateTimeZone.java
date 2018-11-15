@@ -46,13 +46,13 @@ import org.joda.time.tz.ZoneInfoProvider;
 /**
  * DateTimeZone represents a time zone.
  * <p>
- * A time zone is a system of rules to convert time from one geographic 
+ * A time zone is a system of rules to convert time from one geographic
  * location to another. For example, Paris, France is one hour ahead of
  * London, England. Thus when it is 10:00 in London, it is 11:00 in Paris.
  * <p>
  * All time zone rules are expressed, for historical reasons, relative to
  * Greenwich, London. Local time in Greenwich is referred to as Greenwich Mean
- * Time (GMT).  This is similar, but not precisely identical, to Universal 
+ * Time (GMT).  This is similar, but not precisely identical, to Universal
  * Coordinated Time, or UTC. This library only uses the term UTC.
  * <p>
  * Using this system, America/Los_Angeles is expressed as UTC-08:00, or UTC-07:00
@@ -65,9 +65,9 @@ import org.joda.time.tz.ZoneInfoProvider;
  * <li>UTC - The reference time.
  * <li>Standard Time - The local time without a daylight saving time offset.
  * For example, in Paris, standard time is UTC+01:00.
- * <li>Daylight Saving Time - The local time with a daylight saving time 
+ * <li>Daylight Saving Time - The local time with a daylight saving time
  * offset. This offset is typically one hour, but not always. It is typically
- * used in most countries away from the equator.  In Paris, daylight saving 
+ * used in most countries away from the equator.  In Paris, daylight saving
  * time is UTC+02:00.
  * <li>Wall Time - This is what a local clock on the wall reads. This will be
  * either Standard Time or Daylight Saving Time depending on the time of year
@@ -94,7 +94,7 @@ import org.joda.time.tz.ZoneInfoProvider;
  * <p>
  * DateTimeZone is thread-safe and immutable, and all subclasses must be as
  * well.
- * 
+ *
  * @author Brian S O'Neill
  * @author Stephen Colebourne
  * @since 1.0
@@ -143,7 +143,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * NOTE: If the {@code java.util.TimeZone} default is updated <i>after</i> calling this
      * method, then the change will not be picked up here.
-     * 
+     *
      * @return the default datetime zone object
      */
     public static DateTimeZone getDefault() {
@@ -178,7 +178,7 @@ public abstract class DateTimeZone implements Serializable {
      * Sets the default time zone.
      * <p>
      * NOTE: Calling this method does <i>not</i> set the {@code java.util.TimeZone} default.
-     * 
+     *
      * @param zone  the default datetime zone object, must not be null
      * @throws IllegalArgumentException if the zone is null
      * @throws SecurityException if the application has insufficient security rights
@@ -205,7 +205,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * Alternatively a locale independent, fixed offset, datetime zone can
      * be specified. The form <code>[+-]hh:mm</code> can be used.
-     * 
+     *
      * @param id  the ID of the datetime zone, null means default
      * @return the DateTimeZone object for the ID
      * @throws IllegalArgumentException if the ID is not recognised
@@ -239,11 +239,13 @@ public abstract class DateTimeZone implements Serializable {
      * This method assumes standard length hours.
      * <p>
      * This factory is a convenient way of constructing zones with a fixed offset.
-     * 
+     *
      * @param hoursOffset  the offset in hours from UTC, from -23 to +23
      * @return the DateTimeZone object for the offset
      * @throws IllegalArgumentException if the offset is too large or too small
      */
+    //@ requires hoursOffset >= -23;
+    //@ requires hoursOffset <= 23;
     public static DateTimeZone forOffsetHours(int hoursOffset) throws IllegalArgumentException {
         return forOffsetHoursMinutes(hoursOffset, 0);
     }
@@ -258,27 +260,29 @@ public abstract class DateTimeZone implements Serializable {
      * The following combinations of sign for the hour and minute are possible:
      * <pre>
      *  Hour    Minute    Example    Result
-     * 
+     *
      *  +ve     +ve       (2, 15)    +02:15
      *  +ve     zero      (2, 0)     +02:00
      *  +ve     -ve       (2, -15)   IllegalArgumentException
-     * 
+     *
      *  zero    +ve       (0, 15)    +00:15
      *  zero    zero      (0, 0)     +00:00
      *  zero    -ve       (0, -15)   -00:15
-     * 
+     *
      *  -ve     +ve       (-2, 15)   -02:15
      *  -ve     zero      (-2, 0)    -02:00
      *  -ve     -ve       (-2, -15)  -02:15
      * </pre>
      * Note that in versions before 2.3, the minutes had to be zero or positive.
-     * 
+     *
      * @param hoursOffset  the offset in hours from UTC, from -23 to +23
      * @param minutesOffset  the offset in minutes from UTC, from -59 to +59
      * @return the DateTimeZone object for the offset
      * @throws IllegalArgumentException if any value is out of range, the minutes are negative
      *  when the hours are positive, or the resulting offset exceeds +/- 23:59:59.000
      */
+  //@ requires hoursOffset >= -23 && hoursOffset <= 23;
+  //@ requires minutesOffset >= -59 && minutesOffset <= 59;
     public static DateTimeZone forOffsetHoursMinutes(int hoursOffset, int minutesOffset) throws IllegalArgumentException {
         if (hoursOffset == 0 && minutesOffset == 0) {
             return DateTimeZone.UTC;
@@ -313,6 +317,7 @@ public abstract class DateTimeZone implements Serializable {
      * @param millisOffset  the offset in millis from UTC, from -23:59:59.999 to +23:59:59.999
      * @return the DateTimeZone object for the offset
      */
+    //@ requires millisOffset >= 0;
     public static DateTimeZone forOffsetMillis(int millisOffset) {
         if (millisOffset < -MAX_MILLIS || millisOffset > MAX_MILLIS) {
             throw new IllegalArgumentException("Millis out of range: " + millisOffset);
@@ -325,13 +330,13 @@ public abstract class DateTimeZone implements Serializable {
      * Gets a time zone instance for a JDK TimeZone.
      * <p>
      * DateTimeZone only accepts a subset of the IDs from TimeZone. The
-     * excluded IDs are the short three letter form (except UTC). This 
+     * excluded IDs are the short three letter form (except UTC). This
      * method will attempt to convert between time zones created using the
      * short IDs and the full version.
      * <p>
      * This method is not designed to parse time zones with rules created by
      * applications using <code>SimpleTimeZone</code> directly.
-     * 
+     *
      * @param zone  the zone to convert, null means default
      * @return the DateTimeZone object for the zone
      * @throws IllegalArgumentException if the zone is not recognised
@@ -400,7 +405,7 @@ public abstract class DateTimeZone implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the zone using a fixed offset amount.
-     * 
+     *
      * @param id  the zone id
      * @param offset  the offset in millis
      * @return the zone
@@ -414,7 +419,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Gets all the available IDs supported.
-     * 
+     *
      * @return an unmodifiable Set of String IDs
      */
     public static Set<String> getAvailableIDs() {
@@ -427,7 +432,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * The zone provider is a pluggable instance factory that supplies the
      * actual instances of DateTimeZone.
-     * 
+     *
      * @return the provider
      */
     public static Provider getProvider() {
@@ -446,7 +451,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * The zone provider is a pluggable instance factory that supplies the
      * actual instances of DateTimeZone.
-     * 
+     *
      * @param provider  provider to use, or null for default
      * @throws SecurityException if you do not have the permission DateTimeZone.setProvider
      * @throws IllegalArgumentException if the provider is invalid
@@ -466,7 +471,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Sets the zone provider factory without performing the security check.
-     * 
+     *
      * @param provider  provider to use, or null for default
      * @return the provider
      * @throws IllegalArgumentException if the provider is invalid
@@ -500,7 +505,7 @@ public abstract class DateTimeZone implements Serializable {
      * </ol>
      * <p>
      * Unless you override the standard behaviour, the default if the third approach.
-     * 
+     *
      * @return the default name provider
      */
     private static Provider getDefaultProvider() {
@@ -554,7 +559,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * The name provider is a pluggable instance factory that supplies the
      * names of each DateTimeZone.
-     * 
+     *
      * @return the provider
      */
     public static NameProvider getNameProvider() {
@@ -573,7 +578,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * The name provider is a pluggable instance factory that supplies the
      * names of each DateTimeZone.
-     * 
+     *
      * @param nameProvider  provider to use, or null for default
      * @throws SecurityException if you do not have the permission DateTimeZone.setNameProvider
      * @throws IllegalArgumentException if the provider is invalid
@@ -594,7 +599,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * Tries the system property <code>org.joda.time.DateTimeZone.NameProvider</code>.
      * Then uses <code>DefaultNameProvider</code>.
-     * 
+     *
      * @return the default name provider
      */
     private static NameProvider getDefaultNameProvider() {
@@ -627,7 +632,7 @@ public abstract class DateTimeZone implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Converts an old style id to a new style id.
-     * 
+     *
      * @param id  the old style id
      * @return the new style id, null if not found
      */
@@ -637,7 +642,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Parses an offset from the string.
-     * 
+     *
      * @param str  the string
      * @return the offset millis
      */
@@ -650,7 +655,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * This method is kept separate from the formatting classes to speed and
      * simplify startup and classloading.
-     * 
+     *
      * @param offset  the offset in milliseconds
      * @return the time zone string
      */
@@ -695,7 +700,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param id  the id to use
      * @throws IllegalArgumentException if the id is null
      */
@@ -711,7 +716,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Gets the ID of this datetime zone.
-     * 
+     *
      * @return the ID of this datetime zone
      */
     @ToString
@@ -734,7 +739,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * If the name is not available for the locale, then this method returns a
      * string in the format <code>[+-]hh:mm</code>.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the name for
      * @return the human-readable short name in the default locale
      */
@@ -748,7 +753,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * If the name is not available for the locale, then this method returns a
      * string in the format <code>[+-]hh:mm</code>.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the name for
      * @param locale  the locale to get the name for
      * @return the human-readable short name in the specified locale
@@ -780,7 +785,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * If the name is not available for the locale, then this method returns a
      * string in the format <code>[+-]hh:mm</code>.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the name for
      * @return the human-readable long name in the default locale
      */
@@ -794,7 +799,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * If the name is not available for the locale, then this method returns a
      * string in the format <code>[+-]hh:mm</code>.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the name for
      * @param locale  the locale to get the name for
      * @return the human-readable long name in the specified locale
@@ -822,7 +827,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Gets the millisecond offset to add to UTC to get local time.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the offset for
      * @return the millisecond offset to add to UTC to get local time
      */
@@ -830,7 +835,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Gets the millisecond offset to add to UTC to get local time.
-     * 
+     *
      * @param instant  instant to get the offset for, null means now
      * @return the millisecond offset to add to UTC to get local time
      */
@@ -844,7 +849,7 @@ public abstract class DateTimeZone implements Serializable {
     /**
      * Gets the standard millisecond offset to add to UTC to get local time,
      * when standard time is in effect.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the offset for
      * @return the millisecond offset to add to UTC to get local time
      */
@@ -860,7 +865,7 @@ public abstract class DateTimeZone implements Serializable {
      * <p>
      * The implementation of the method is simply whether {@link #getOffset(long)}
      * equals {@link #getStandardOffset(long)} at the specified instant.
-     * 
+     *
      * @param instant  milliseconds from 1970-01-01T00:00:00Z to get the offset for
      * @return true if the offset at the given instant is the standard offset
      * @since 1.5
@@ -905,6 +910,7 @@ public abstract class DateTimeZone implements Serializable {
      * @param instantLocal  the millisecond instant, relative to this time zone, to get the offset for
      * @return the millisecond offset to subtract from local time to get UTC time
      */
+    //@  requires instantLocal >= 0;
     public int getOffsetFromLocal(long instantLocal) {
         // get the offset at instantLocal (first estimate)
         final int offsetLocal = getOffset(instantLocal);
@@ -976,7 +982,7 @@ public abstract class DateTimeZone implements Serializable {
      * @param instantLocal  the local instant to convert to UTC
      * @param strict  whether the conversion should reject non-existent local times
      * @param originalInstantUTC  the original instant that the calculation is based on
-     * @return the UTC instant with the same local time, 
+     * @return the UTC instant with the same local time,
      * @throws ArithmeticException if the result overflows a long
      * @throws IllegalArgumentException if the zone has no equivalent local time
      * @since 2.0
@@ -998,7 +1004,7 @@ public abstract class DateTimeZone implements Serializable {
      *
      * @param instantLocal  the local instant to convert to UTC
      * @param strict  whether the conversion should reject non-existent local times
-     * @return the UTC instant with the same local time, 
+     * @return the UTC instant with the same local time,
      * @throws ArithmeticException if the result overflows a long
      * @throws IllegalInstantException if the zone has no equivalent local time
      * @since 1.5
@@ -1074,7 +1080,7 @@ public abstract class DateTimeZone implements Serializable {
 //     * When switching from Daylight Savings Time to standard time there is
 //     * typically an overlap where the same clock hour occurs twice. This
 //     * method identifies whether the local datetime refers to such an overlap.
-//     * 
+//     *
 //     * @param localDateTime  the time to check, not null
 //     * @return true if the given datetime refers to an overlap
 //     */
@@ -1168,7 +1174,7 @@ public abstract class DateTimeZone implements Serializable {
      * When switching from standard time to Daylight Savings Time there is
      * typically a gap where a clock hour is missing. This method identifies
      * whether the local datetime refers to such a gap.
-     * 
+     *
      * @param localDateTime  the time to check, not null
      * @return true if the given datetime refers to a gap
      * @since 1.6
@@ -1187,7 +1193,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Adjusts the offset to be the earlier or later one during an overlap.
-     * 
+     *
      * @param instant  the instant to adjust
      * @param earlierOrLater  false for earlier, true for later
      * @return the adjusted instant millis
@@ -1251,6 +1257,7 @@ public abstract class DateTimeZone implements Serializable {
      * @param instant  milliseconds from 1970-01-01T00:00:00Z
      * @return milliseconds from 1970-01-01T00:00:00Z
      */
+    //@ requires instant >= 0;
     public abstract long previousTransition(long instant);
 
     // Basic methods
@@ -1258,7 +1265,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Get the datetime zone as a {@link java.util.TimeZone}.
-     * 
+     *
      * @return the closest matching TimeZone object
      */
     public java.util.TimeZone toTimeZone() {
@@ -1267,7 +1274,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Compare this datetime zone with another.
-     * 
+     *
      * @param object the object to compare with
      * @return true if equal, based on the ID and all internal rules
      */
@@ -1275,7 +1282,7 @@ public abstract class DateTimeZone implements Serializable {
 
     /**
      * Gets a hash code compatible with equals.
-     * 
+     *
      * @return suitable hashcode
      */
     public int hashCode() {

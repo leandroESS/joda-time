@@ -68,6 +68,7 @@ public final class Weeks extends BaseSingleFieldPeriod {
      * @param weeks  the number of weeks to obtain an instance for
      * @return the instance of Weeks
      */
+    //@ requires weeks == 0 || weeks == 1 || weeks == 2 || weeks == 3 || weeks == Integer.MAX_VALUE || weeks == Integer.MIN_VALUE;
     public static Weeks weeks(int weeks) {
         switch (weeks) {
             case 0:
@@ -325,6 +326,7 @@ public final class Weeks extends BaseSingleFieldPeriod {
      *
      * @return the number of weeks in the period
      */
+    
     public int getWeeks() {
         return getValue();
     }
@@ -339,6 +341,7 @@ public final class Weeks extends BaseSingleFieldPeriod {
      * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
+    
     public Weeks plus(int weeks) {
         if (weeks == 0) {
             return this;
@@ -416,6 +419,7 @@ public final class Weeks extends BaseSingleFieldPeriod {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    //@ requires divisor != 0;
     public Weeks dividedBy(int divisor) {
         if (divisor == 1) {
             return this;

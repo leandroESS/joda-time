@@ -77,7 +77,7 @@ public final class Period
      * @since 2.0
      */
     @FromString
-    public static Period parse(String str) {
+    public static Period parse(/*@ non_null @*/String str) {
         return parse(str, ISOPeriodFormat.standard());
     }
 
@@ -1350,7 +1350,8 @@ public final class Period
      * @throws ArithmeticException if the capacity of any field is exceeded
      * @since 2.1
      */
-    public Period multipliedBy(int scalar) {
+    
+    public Period multipliedBy(/*@ non_null @*/int scalar) {
         if (this == ZERO || scalar == 1) {
             return this;
         }

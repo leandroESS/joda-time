@@ -624,6 +624,8 @@ public class PeriodType implements Serializable {
      * @return the field type
      * @throws IndexOutOfBoundsException if the index is invalid
      */
+    //@ requires index >=  0;
+    //@ requires index <= 7;
     public DurationFieldType getFieldType(int index) {
         return iTypes[index];
     }
@@ -670,6 +672,8 @@ public class PeriodType implements Serializable {
      * @param index  the index to use
      * @return the value of the field, zero if unsupported
      */
+  //@ requires index >=  0;
+    //@ requires index <= 7;
     int getIndexedField(ReadablePeriod period, int index) {
         int realIndex = iIndices[index];
         return (realIndex == -1 ? 0 : period.getValue(realIndex));
@@ -847,6 +851,7 @@ public class PeriodType implements Serializable {
      * 
      * @return a suitable hashcode
      */
+    
     public int hashCode() {
         int hash = 0;
         for (int i = 0; i < iTypes.length; i++) {

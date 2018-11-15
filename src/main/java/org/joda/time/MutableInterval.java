@@ -86,6 +86,7 @@ public class MutableInterval
      * @param endInstant  end of this interval, as milliseconds from 1970-01-01T00:00:00Z.
      * @throws IllegalArgumentException if the end is before the start
      */
+    //@ requires endInstant >= startInstant;
     public MutableInterval(long startInstant, long endInstant) {
         super(startInstant, endInstant, null);
     }
@@ -98,6 +99,7 @@ public class MutableInterval
      * @param endInstant  end of this interval, as milliseconds from 1970-01-01T00:00:00Z.
      * @throws IllegalArgumentException if the end is before the start
      */
+  //@ requires endInstant >= startInstant;
     public MutableInterval(long startInstant, long endInstant, Chronology chronology) {
         super(startInstant, endInstant, chronology);
     }
@@ -213,6 +215,7 @@ public class MutableInterval
      * @param endInstant  the start of the time interval
      * @throws IllegalArgumentException if the end is before the start
      */
+  //@ requires endInstant >= startInstant;
     public void setInterval(long startInstant, long endInstant) {
         super.setInterval(startInstant, endInstant, getChronology());
     }
@@ -270,6 +273,7 @@ public class MutableInterval
      *  millisecond instant from 1970-01-01T00:00:00Z
      * @throws IllegalArgumentException if the end is before the start
      */
+    //@requires startInstant >= 0;
     public void setStartMillis(long startInstant) {
         super.setInterval(startInstant, getEndMillis(), getChronology());
     }
@@ -292,6 +296,7 @@ public class MutableInterval
      *  millisecond instant from 1970-01-01T00:00:00Z
      * @throws IllegalArgumentException if the end is before the start
      */
+    //@ requires endInstant >= 0;
     public void setEndMillis(long endInstant) {
         super.setInterval(getStartMillis(), endInstant, getChronology());
     }

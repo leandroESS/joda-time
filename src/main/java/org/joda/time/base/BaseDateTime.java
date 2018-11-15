@@ -93,6 +93,7 @@ public abstract class BaseDateTime
      *
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      */
+    //@ requires instant >= 0;
     public BaseDateTime(long instant) {
         this(instant, ISOChronology.getInstance());
     }
@@ -106,6 +107,7 @@ public abstract class BaseDateTime
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      * @param zone  the time zone, null means default zone
      */
+    //@ requires instant >= 0;
     public BaseDateTime(long instant, DateTimeZone zone) {
         this(instant, ISOChronology.getInstance(zone));
     }
@@ -120,6 +122,7 @@ public abstract class BaseDateTime
      * @param instant  the milliseconds from 1970-01-01T00:00:00Z
      * @param chronology  the chronology, null means ISOChronology in default zone
      */
+    //@ requires instant >= 0;
     public BaseDateTime(long instant, Chronology chronology) {
         super();
         iChronology = checkChronology(chronology);
@@ -290,6 +293,8 @@ public abstract class BaseDateTime
      * @param chronology  the chronology to use, not null
      * @return the instant to store in this datetime
      */
+    //@ requires instant >= 0;
+    //@ ensures \result == instant;
     protected long checkInstant(long instant, Chronology chronology) {
         return instant;
     }
@@ -323,6 +328,7 @@ public abstract class BaseDateTime
      *
      * @param instant  the milliseconds since 1970-01-01T00:00:00Z to set the datetime to
      */
+    //@ requires instant >= 0;
     protected void setMillis(long instant) {
         iMillis = checkInstant(instant, iChronology);
     }
